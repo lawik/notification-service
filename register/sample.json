@@ -1,0 +1,18 @@
+{ "queues": ["notify_js","notify_email"],
+  "target": {
+    "unique_web_id": "jf829jid891mm189jf88f91mmmf",
+    "email_to": ["test@subterra.se","test2@subterra.se"],
+    "email_bcc": ["secret@subterra.se"],
+    "usernames": ["tobias", "jennifer"]
+  },
+  "message": {
+    "email_from": "root@subterra.se",
+    "email_title": "How do you do?",
+    "email_text": "Greeting. I am interested in offering you ..",
+    "email_html": "<strong>I am formatted!</strong>",
+    "unread_count": 5,
+    "text": "A friend has added you...",
+    "html": "<strong>With emphasis.</strong>",
+    "icon": "http://subterra.se/favicon.png"
+  }
+}
