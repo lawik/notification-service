@@ -10,11 +10,33 @@ import config
 app = Flask(__name__)
 api = restful.Api(app)
 
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+
+channel = connection.channel()
+for queue in config.SUPPORTED_QUEUES:
+    channel.queue_declare(queue=queue, durable=True)
+
+
 class RegisterEvent(restful.Resource):
     def post(self):
         validation = self.validate(request.data)
 
         if validation == True:
+            global channel
+            item = json.loads(request.data) # Practically redundant parse
+                                            # See validation
+
+            queues = item['queues']
+            del(item['queues'])
+            for queue in queues:
+                print "Queue: "+queue
+                channel.basic_publish(exchange='',
+                    routing_key=queue,
+                    body=json.dumps(item),
+                    properties=pika.BasicProperties(
+                        delivery_mode = 2, # make message persistent
+                    )
+                )
             return {'status': 'ok'}
         else:
             return {'status': 'error', 'error': "\n".join(validation['errors'])}
@@ -23,7 +45,8 @@ class RegisterEvent(restful.Resource):
         valid = True
         errors = []
 
-        item = json.loads(data)
+        item = json.loads(data) # Bad place to parse it since it is not kept
+                                # and needs parsing again later
 
         # Validate queues
         if 'queues' not in item:
@@ -53,7 +76,7 @@ class RegisterEvent(restful.Resource):
             errors.append('No message field in item.')
         else:
             message = item['message']
-            if not isinstance(message, dict)
+            if not isinstance(message, dict):
                 valid = False
                 errors.append('Type error, message is not a dict')
             # Does not check if the message has fields...
