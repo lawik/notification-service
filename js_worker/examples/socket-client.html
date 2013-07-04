@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>Socket client example</title>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            console.log("Ready to go.");
+            var socket = io.connect('http://notify.subterra.se:1281');
+            
+            socket.on('identify', function (data) {
+                console.log("Received identify.");
+                socket.emit('identify', { key: 'unique_web_id', value: 'jf829jid891mm189jf88f91mmmf'});
+            });
+            socket.on('default', function (data) {
+                console.log("Default event received.");
+                console.log(data);
+            });
+        </script>
+    </head>
+</html>
