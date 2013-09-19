@@ -17,7 +17,6 @@ connection.on('ready', function(){
             io.sockets.on('connection', function(client){
                 console.log("Client connected.");
                 console.log(client);
-                client.emit('identify');
                 client.on('identify', function(data) {
                     console.log(data);
                     client.set('key', data.key);
@@ -42,6 +41,8 @@ connection.on('ready', function(){
                         });
                     });
                 });
+
+                client.emit('identify');
             });
 
             queue.subscribe( {ack: true}, function (message) {
